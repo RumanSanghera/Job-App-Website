@@ -3,9 +3,7 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
-  },
-  basePath: process.env.NODE_ENV === 'production' ? '/job-app-website' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/job-app-website/' : '',
+  }
 }
 
 module.exports = nextConfig 
