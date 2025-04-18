@@ -6,21 +6,19 @@ import Link from 'next/link';
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showError, setShowError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement API call to Spring Boot backend
-    console.log('Login attempt with:', { email, password });
+    setShowError(true);
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    console.log('Google login clicked');
+    setShowError(true);
   };
 
   const handleAppleLogin = () => {
-    // TODO: Implement Apple OAuth
-    console.log('Apple login clicked');
+    setShowError(true);
   };
 
   return (
@@ -37,6 +35,25 @@ export default function Login() {
             </Link>
           </p>
         </div>
+
+        {showError && (
+          <div className="rounded-md bg-red-50 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">Service Unavailable</h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>Our authentication service is currently being set up. Please check back later.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
@@ -144,7 +161,7 @@ export default function Login() {
               className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.08-.46-2.07-.47-3.21 0-1.44.6-2.2.45-3.08-.35-4.32-4.2-3.75-9.1 1.47-9.33 1.13.07 2.07.74 2.88.78 1.14-.14 2.24-.82 3.38-.78 1.41.07 2.71.67 3.66 1.64-3.23 1.96-2.42 5.95.96 7.09-.6 1.3-.9 2.6-.9 3.9 0 .1.01.2.01.3zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.27 2.65-2.14 4.5-3.74 4.25z" />
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.65 4.03zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
               </svg>
               <span className="ml-2">Apple</span>
             </button>

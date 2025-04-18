@@ -27,7 +27,7 @@ A modern web application for job seekers to manage their applications and career
 
 3. **Configure GitHub Pages**
    - The workflow will automatically deploy your site to GitHub Pages
-   - Your site will be available at: `https://[your-username].github.io/job-app-website`
+   - Your site will be available at: `https://RumanSanghera.github.io/job-app-website`
 
 4. **Set up Namecheap Domain (Optional)**
    - In your Namecheap account, add a CNAME record pointing to your GitHub Pages URL

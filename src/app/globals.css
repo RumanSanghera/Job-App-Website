@@ -26,11 +26,12 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden;
   background-color: #f9fafb; /* Tailwind's gray-50 color */
 }
 
 #__next {
   height: 100%;
   background-color: #f9fafb; /* Tailwind's gray-50 color */
+  display: flex;
+  flex-direction: column;
 }
