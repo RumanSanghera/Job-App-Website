@@ -17,8 +17,8 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-blue-600">
-            Goldthorn Collective
+          <Link href="/" className="flex items-center">
+            <img src="/logo.svg" alt="Goldthorn Collective" className="h-8" />
           </Link>
 
           {/* Desktop Navigation */}

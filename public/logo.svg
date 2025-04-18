@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="250" height="50" viewBox="0 0 250 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Golden Thorn Icon -->
+  <path d="M20 10 L30 40 L40 10" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+  <path d="M25 25 L35 25" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Text -->
+  <text x="55" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="#1E40AF">
+    Goldthorn Collective
+  </text>
+</svg> 
