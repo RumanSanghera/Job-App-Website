@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="250" height="50" viewBox="0 0 250 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="300" height="60" viewBox="0 0 300 60" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Golden Thorn Icon -->
-  <path d="M20 10 L30 40 L40 10" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
-  <path d="M25 25 L35 25" stroke="#FFD700" stroke-width="3" stroke-linecap="round"/>
+  <path d="M25 15 L35 45 L45 15" stroke="url(#gradient)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M30 30 L40 30" stroke="url(#gradient)" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+  </defs>
   
   <!-- Text -->
-  <text x="55" y="30" font-family="Arial" font-size="20" font-weight="bold" fill="#1E40AF">
+  <text x="65" y="35" font-family="Arial" font-size="24" font-weight="bold" fill="url(#gradient)">
     Goldthorn Collective
   </text>
 </svg> 
