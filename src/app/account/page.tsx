@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { getUserProfile } from '@/utils/auth';
 import { mockUserProfile } from '@/utils/mockData';
 import type { UserProfile, Preferences, PrivacyPreferences, NotificationPreferences } from '@/types/user';
@@ -105,11 +106,14 @@ export default function AccountPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700">Profile Picture</label>
                 {profile.profilePictureUrl ? (
-                  <img 
-                    src={profile.profilePictureUrl} 
-                    alt="Profile" 
-                    className="mt-2 w-20 h-20 rounded-full"
-                  />
+                  <div className="mt-2 relative w-20 h-20">
+                    <Image 
+                      src={profile.profilePictureUrl} 
+                      alt="Profile" 
+                      fill
+                      className="rounded-full object-cover"
+                    />
+                  </div>
                 ) : (
                   <p className="mt-1 text-gray-500">No profile picture set</p>
                 )}
