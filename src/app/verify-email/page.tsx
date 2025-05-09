@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get('token');
@@ -15,17 +15,7 @@ export default function VerifyEmailPage() {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isResending, setIsResending] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setVerificationState('error');
-      setErrorMessage('Invalid verification link. Please request a new verification email.');
-      return;
-    }
-
-    verifyEmail();
-  }, [token]);
-
-  const verifyEmail = async () => {
+  const verifyEmail = useCallback(async () => {
     try {
       const response = await fetch(`https://api.goldthorncollective.com/auth/verify-email?token=${token}`, {
         method: 'POST',
@@ -48,7 +38,17 @@ export default function VerifyEmailPage() {
       setVerificationState('error');
       setErrorMessage(error instanceof Error ? error.message : 'Failed to verify email');
     }
-  };
+  }, [token, router]);
+
+  useEffect(() => {
+    if (!token) {
+      setVerificationState('error');
+      setErrorMessage('Invalid verification link. Please request a new verification email.');
+      return;
+    }
+
+    verifyEmail();
+  }, [token, verifyEmail]);
 
   const handleResendVerification = async () => {
     if (!email) {
@@ -169,7 +169,7 @@ export default function VerifyEmailPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div className="text-sm text-blue-700">
-                  <p className="font-medium mb-1">What's next?</p>
+                  <p className="font-medium mb-1">What&apos;s next?</p>
                   <ul className="list-disc list-inside space-y-1">
                     <li>Open the email we sent you</li>
                     <li>Click the verification link in the email</li>
@@ -196,5 +196,17 @@ export default function VerifyEmailPage() {
         </div>
       </motion.div>
     </main>
+  );
+}
+
+export default function VerifyEmailPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 } 
