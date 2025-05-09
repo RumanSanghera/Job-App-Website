@@ -17,7 +17,7 @@ function VerifyEmailContent() {
 
   const verifyEmail = useCallback(async () => {
     try {
-      const response = await fetch(`https://api.goldthorncollective.com/auth/verify-email?token=${token}`, {
+      const response = await fetch(`https://api.goldthorncollective.com/account/auth/verify-email?token=${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +58,7 @@ function VerifyEmailContent() {
 
     setIsResending(true);
     try {
-      const response = await fetch('https://api.goldthorncollective.com/auth/verify-email/request', {
+      const response = await fetch('https://api.goldthorncollective.com/account/auth/verify-email/request', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
