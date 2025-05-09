@@ -53,7 +53,7 @@ export default function Contact() {
   };
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[rgb(var(--background-rgb))]">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-32 overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:50px_50px]" />
@@ -75,7 +75,7 @@ export default function Contact() {
       </section>
 
       {/* Contact Section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-[rgb(var(--background-rgb))]">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -87,7 +87,7 @@ export default function Contact() {
                 viewport={{ once: true }}
                 className="space-y-8"
               >
-                <h2 className="text-3xl font-bold text-gray-900">Get in Touch</h2>
+                <h2 className="text-3xl font-bold text-[rgb(var(--foreground-rgb))]">Get in Touch</h2>
                 <div className="space-y-6">
                   {[
                     {
@@ -118,13 +118,13 @@ export default function Contact() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: index * 0.1 }}
                       viewport={{ once: true }}
-                      className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
+                      className="bg-[rgb(var(--card-background))] p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300"
                     >
                       <div className="flex items-start gap-4">
                         <div className="text-3xl">{item.icon}</div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
-                          <p className="text-gray-600 mt-1">{item.content}</p>
+                          <h3 className="font-semibold text-[rgb(var(--foreground-rgb))]">{item.title}</h3>
+                          <p className="text-[rgb(var(--foreground-rgb))] opacity-70 mt-1">{item.content}</p>
                           <span className={`inline-block mt-2 px-3 py-1 text-xs font-medium rounded-full ${item.statusColor}`}>
                             {item.status}
                           </span>
@@ -142,18 +142,18 @@ export default function Contact() {
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
               >
-                <h2 className="text-3xl font-bold text-gray-900 mb-8">Send us a Message</h2>
+                <h2 className="text-3xl font-bold text-[rgb(var(--foreground-rgb))] mb-8">Send us a Message</h2>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="name" className="block text-sm font-medium text-[rgb(var(--foreground-rgb))] opacity-70 mb-2">
                         Name
                       </label>
                       <input
                         type="text"
                         id="name"
                         name="name"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                        className="w-full px-4 py-3 border border-[rgb(var(--border-color))] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 bg-[rgb(var(--card-background))] text-[rgb(var(--foreground-rgb))]"
                         required
                         value={formData.name}
                         onChange={handleChange}
@@ -161,14 +161,14 @@ export default function Contact() {
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="email" className="block text-sm font-medium text-[rgb(var(--foreground-rgb))] opacity-70 mb-2">
                         Email
                       </label>
                       <input
                         type="email"
                         id="email"
                         name="email"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                        className="w-full px-4 py-3 border border-[rgb(var(--border-color))] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 bg-[rgb(var(--card-background))] text-[rgb(var(--foreground-rgb))]"
                         required
                         value={formData.email}
                         onChange={handleChange}
@@ -177,14 +177,14 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="subject" className="block text-sm font-medium text-[rgb(var(--foreground-rgb))] opacity-70 mb-2">
                       Subject
                     </label>
                     <input
                       type="text"
                       id="subject"
                       name="subject"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                      className="w-full px-4 py-3 border border-[rgb(var(--border-color))] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 bg-[rgb(var(--card-background))] text-[rgb(var(--foreground-rgb))]"
                       required
                       value={formData.subject}
                       onChange={handleChange}
@@ -192,14 +192,14 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="message" className="block text-sm font-medium text-[rgb(var(--foreground-rgb))] opacity-70 mb-2">
                       Message
                     </label>
                     <textarea
                       id="message"
                       name="message"
                       rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                      className="w-full px-4 py-3 border border-[rgb(var(--border-color))] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300 bg-[rgb(var(--card-background))] text-[rgb(var(--foreground-rgb))]"
                       required
                       value={formData.message}
                       onChange={handleChange}

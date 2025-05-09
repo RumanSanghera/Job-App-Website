@@ -15,18 +15,58 @@ export default function LoginPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleResendVerification = async () => {
+    try {
+      setIsResending(true);
+      const response = await fetch('https://api.goldthorncollective.com/account/auth/resend-verification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to resend verification email');
+      }
+
+      // Start cooldown timer (2 minutes)
+      setCooldown(120); // 2 minutes in seconds
+      const timer = setInterval(() => {
+        setCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      setError('Verification email sent! Please check your inbox.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to resend verification email');
+    } finally {
+      setIsResending(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
+    console.log('🚀 Login form submitted');
 
     try {
+      console.log('📤 Sending login request...');
       const response = await fetch('https://api.goldthorncollective.com/account/auth/login', {
         method: 'POST',
         headers: {
@@ -40,15 +80,22 @@ export default function LoginPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        if (response.status === 400 && errorData.message === 'Email not verified or account disabled') {
+          setError('Please verify your email address before logging in.');
+          return;
+        }
         throw new Error(errorData.message || 'Login failed');
       }
 
       const data = await response.json();
-      setTokens(data.access_token, data.refresh_token);
+      setTokens(data.accessToken, data.refreshToken);
+      console.log('🔐 Tokens set in auth');
       
       // Redirect to dashboard or home page
+      console.log('🔄 Redirecting to home page...');
       router.push('/');
     } catch (err) {
+      console.error('❌ Login error in page:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
@@ -84,11 +131,26 @@ export default function LoginPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg"
               >
-                <div className="flex items-center gap-2 text-red-700">
-                  <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                  </svg>
-                  <span>{error}</span>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2 text-red-700">
+                    <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span>{error}</span>
+                  </div>
+                  {error.includes('verify your email') && (
+                    <button
+                      onClick={handleResendVerification}
+                      disabled={cooldown > 0 || isResending}
+                      className={`text-sm text-blue-600 hover:text-blue-500 transition-colors duration-200 ${
+                        cooldown > 0 || isResending ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      {isResending ? 'Sending...' : 
+                       cooldown > 0 ? `Resend in ${Math.floor(cooldown / 60)}:${(cooldown % 60).toString().padStart(2, '0')}` :
+                       'Resend verification email'}
+                    </button>
+                  )}
                 </div>
               </motion.div>
             )}

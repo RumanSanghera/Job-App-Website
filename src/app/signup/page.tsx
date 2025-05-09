@@ -4,7 +4,6 @@ import { useState } from 'react';
 import GoogleLoginButton from '@/components/GoogleLoginButton';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { setTokens } from '@/utils/auth';
 import { motion } from 'framer-motion';
 
 export default function SignupPage() {
@@ -25,6 +24,27 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Password validation
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('Password must contain at least one uppercase letter');
+      return;
+    }
+
+    if (!/[a-z]/.test(formData.password)) {
+      setError('Password must contain at least one lowercase letter');
+      return;
+    }
+
+    if (!/[0-9]/.test(formData.password)) {
+      setError('Password must contain at least one number');
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
@@ -47,16 +67,32 @@ export default function SignupPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle specific error cases
+        if (response.status === 409) {
+          setError('An account with this email already exists');
+          return;
+        }
+        
+        if (response.status === 400) {
+          if (errorData.message?.includes('email')) {
+            setError('Please enter a valid email address');
+          } else if (errorData.message?.includes('password')) {
+            setError('Please ensure your password meets all requirements');
+          } else {
+            setError(errorData.message || 'Invalid input data');
+          }
+          return;
+        }
+
         throw new Error(errorData.message || 'Registration failed');
       }
 
-      const data = await response.json();
-      setTokens(data.access_token, data.refresh_token);
-      
-      // Redirect to dashboard or home page
-      router.push('/');
+      // Redirect to verification page with email parameter
+      router.push(`/verify-email?email=${encodeURIComponent(formData.email)}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      console.error('Registration error:', err);
+      setError(err instanceof Error ? err.message : 'An error occurred during registration');
     } finally {
       setIsLoading(false);
     }

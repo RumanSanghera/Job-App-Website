@@ -1,117 +1,200 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
-function VerifyEmailContent() {
-  const router = useRouter();
+export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [message, setMessage] = useState('');
+  const router = useRouter();
+  const token = searchParams.get('token');
+  const email = searchParams.get('email');
+  
+  const [verificationState, setVerificationState] = useState<'loading' | 'success' | 'error'>('loading');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isResending, setIsResending] = useState(false);
 
   useEffect(() => {
-    const verifyEmail = async () => {
-      try {
-        const token = searchParams.get('token');
-        
-        if (!token) {
-          setStatus('error');
-          setMessage('No verification token provided');
-          return;
-        }
-
-        const response = await fetch(
-          `https://api.goldthorncollective.com/account/auth/verify-email?token=${token}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-
-        if (response.ok) {
-          setStatus('success');
-          setMessage('Email verified successfully! Redirecting to your account...');
-          // Redirect to account page after 3 seconds
-          setTimeout(() => {
-            router.push('/account');
-          }, 3000);
-        } else {
-          const data = await response.json();
-          setStatus('error');
-          setMessage(data.message || 'Failed to verify email. Please try again.');
-        }
-      } catch {
-        setStatus('error');
-        setMessage('An error occurred while verifying your email. Please try again.');
-      }
-    };
+    if (!token) {
+      setVerificationState('error');
+      setErrorMessage('Invalid verification link. Please request a new verification email.');
+      return;
+    }
 
     verifyEmail();
-  }, [searchParams, router]);
+  }, [token]);
 
-  return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full mx-auto p-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          {status === 'loading' && (
-            <>
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">Verifying your email...</h1>
-              <p className="text-gray-600">Please wait while we verify your email address.</p>
-            </>
-          )}
+  const verifyEmail = async () => {
+    try {
+      const response = await fetch(`https://api.goldthorncollective.com/auth/verify-email?token=${token}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-          {status === 'success' && (
-            <>
-              <div className="text-green-500 mb-4">
-                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">Email Verified!</h1>
-              <p className="text-gray-600">{message}</p>
-            </>
-          )}
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to verify email');
+      }
 
-          {status === 'error' && (
-            <>
-              <div className="text-red-500 mb-4">
-                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">Verification Failed</h1>
-              <p className="text-gray-600 mb-4">{message}</p>
-              <Link 
-                href="/contact" 
-                className="text-blue-600 hover:text-blue-800 font-medium"
-              >
-                Contact Support
-              </Link>
-            </>
-          )}
+      setVerificationState('success');
+      // Redirect to login after 3 seconds
+      setTimeout(() => {
+        router.push('/login');
+      }, 3000);
+    } catch (error) {
+      setVerificationState('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to verify email');
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) {
+      setErrorMessage('Email address not found. Please try signing up again.');
+      return;
+    }
+
+    setIsResending(true);
+    try {
+      const response = await fetch('https://api.goldthorncollective.com/auth/verify-email/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to resend verification email');
+      }
+
+      alert('Verification email has been resent. Please check your inbox.');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to resend verification email');
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const renderContent = () => {
+    if (verificationState === 'loading') {
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-blue-600 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Verifying Your Email</h1>
+          <p className="text-gray-600">Please wait while we verify your email address...</p>
+        </motion.div>
+      );
+    }
+
+    if (verificationState === 'success') {
+      return (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-center mb-8"
+        >
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Email Verified!</h1>
+          <p className="text-gray-600">Your email has been successfully verified. Redirecting to login...</p>
+        </motion.div>
+      );
+    }
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-center mb-8"
+      >
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
         </div>
-      </div>
-    </main>
-  );
-}
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Verification Failed</h1>
+        <p className="text-gray-600 mb-4">{errorMessage}</p>
+        <button
+          onClick={handleResendVerification}
+          disabled={isResending}
+          className="text-blue-600 hover:text-blue-500 font-medium transition-colors duration-200 disabled:opacity-50"
+        >
+          {isResending ? 'Sending...' : 'Resend verification email'}
+        </button>
+      </motion.div>
+    );
+  };
 
-export default function VerifyEmail() {
   return (
-    <Suspense fallback={
-      <main className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full mx-auto p-8 bg-white rounded-lg shadow-md">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Loading...</h1>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-50">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-md w-full mx-auto p-8"
+      >
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          {/* Decorative top bar */}
+          <div className="h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600"></div>
+          
+          <div className="p-8">
+            {renderContent()}
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="bg-blue-50 rounded-lg p-4 mb-6"
+            >
+              <div className="flex items-start gap-3">
+                <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="text-sm text-blue-700">
+                  <p className="font-medium mb-1">What's next?</p>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li>Open the email we sent you</li>
+                    <li>Click the verification link in the email</li>
+                    <li>Return here to sign in</li>
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-4"
+            >
+              <Link
+                href="/login"
+                className="block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl"
+              >
+                Return to Sign In
+              </Link>
+            </motion.div>
           </div>
         </div>
-      </main>
-    }>
-      <VerifyEmailContent />
-    </Suspense>
+      </motion.div>
+    </main>
   );
 } 

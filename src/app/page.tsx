@@ -14,7 +14,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[rgb(var(--background-rgb))]">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-32 overflow-hidden">
         <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:50px_50px]" />
@@ -47,13 +47,13 @@ export default function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-24 bg-gray-50">
+      <section className="py-24 bg-[rgb(var(--background-rgb))]">
         <div className="container mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-4xl font-bold text-center mb-16"
+            className="text-4xl font-bold text-center mb-16 text-[rgb(var(--foreground-rgb))]"
           >
             What You&apos;ll Learn
           </motion.h2>
@@ -80,11 +80,11 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 opacity-100"
+                className="bg-[rgb(var(--card-background))] p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 opacity-100"
               >
                 <div className="text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-4">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
+                <h3 className="text-xl font-semibold mb-4 text-[rgb(var(--foreground-rgb))]">{feature.title}</h3>
+                <p className="text-[rgb(var(--foreground-rgb))] opacity-70">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -92,7 +92,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-[rgb(var(--card-background))]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -117,11 +117,11 @@ export default function Home() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.2 }}
-                className="text-center p-6 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors duration-300"
+                className="text-center p-6 bg-[rgb(var(--background-rgb))] rounded-xl hover:bg-[rgb(var(--background-rgb))] transition-colors duration-300"
               >
                 <div className="text-5xl font-bold text-blue-600 mb-2">{stat.number}</div>
-                <div className="text-xl font-semibold text-gray-800 mb-2">{stat.label}</div>
-                <div className="text-gray-600 text-sm">{stat.description}</div>
+                <div className="text-xl font-semibold text-[rgb(var(--foreground-rgb))] mb-2">{stat.label}</div>
+                <div className="text-[rgb(var(--foreground-rgb))] opacity-70 text-sm">{stat.description}</div>
               </motion.div>
             ))}
           </div>

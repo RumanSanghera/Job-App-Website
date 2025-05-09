@@ -1,9 +1,17 @@
 'use client';
 
 export default function GoogleLoginButton() {
-  const handleGoogleLogin = () => {
-    // Redirect to Google OAuth endpoint
-    window.location.href = 'https://api.goldthorncollective.com/account/oauth2/authorization/google';
+  const handleGoogleLogin = async () => {
+    try {
+      // Get the Google OAuth URL from our API
+      const response = await fetch('https://api.goldthorncollective.com/account/auth/oauth2/google');
+      const data = await response.json();
+      
+      // Redirect to Google's OAuth page
+      window.location.href = data.authUrl;
+    } catch (error) {
+      console.error('Failed to initiate Google login:', error);
+    }
   };
 
   return (
