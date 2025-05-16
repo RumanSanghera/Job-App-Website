@@ -70,14 +70,13 @@ function ResetPasswordContent() {
     setIsLoading(true);
 
     try {
-      const response = await fetch(AUTH_ENDPOINTS.resetPassword, {
+      const response = await fetch(`${AUTH_ENDPOINTS.resetPassword}?token=${encodeURIComponent(token)}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          token,
-          password: formData.password,
+          newPassword: formData.password,
         }),
       });
 
