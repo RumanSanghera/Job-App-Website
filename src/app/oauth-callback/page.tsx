@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { AUTH_ENDPOINTS } from '@/utils/apiEndpoints';
 
 function OAuthCallbackContent() {
   const router = useRouter();
@@ -21,7 +22,7 @@ function OAuthCallbackContent() {
         }
 
         // Exchange code for tokens
-        const response = await fetch('https://api.goldthorncollective.com/account/auth/token', {
+        const response = await fetch(AUTH_ENDPOINTS.token, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

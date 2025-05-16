@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { setTokens } from '@/utils/auth';
 import { motion } from 'framer-motion';
+import { AUTH_ENDPOINTS } from '@/utils/apiEndpoints';
+import { userState } from '@/utils/userState';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,7 +28,7 @@ export default function LoginPage() {
   const handleResendVerification = async () => {
     try {
       setIsResending(true);
-      const response = await fetch('https://api.goldthorncollective.com/account/auth/resend-verification', {
+      const response = await fetch(AUTH_ENDPOINTS.resendVerification, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +69,7 @@ export default function LoginPage() {
 
     try {
       console.log('📤 Sending login request...');
-      const response = await fetch('https://api.goldthorncollective.com/account/auth/login', {
+      const response = await fetch(AUTH_ENDPOINTS.login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -90,6 +92,18 @@ export default function LoginPage() {
       const data = await response.json();
       setTokens(data.accessToken, data.refreshToken);
       console.log('🔐 Tokens set in auth');
+      
+      // Save user data to localStorage
+      if (data.user) {
+        console.log('👤 User data received:', data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Store the userId in userState
+        if (data.user.userId) {
+          userState.setUserId(data.user.userId);
+          console.log('🆔 UserId stored in userState:', data.user.userId);
+        }
+      }
       
       // Redirect to dashboard or home page
       console.log('🔄 Redirecting to home page...');

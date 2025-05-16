@@ -1,5 +1,6 @@
 import type { UserProfile } from '@/types/user';
 import { userState } from './userState';
+import { AUTH_ENDPOINTS } from './apiEndpoints';
 
 export const getAccessToken = () => {
   if (typeof window !== 'undefined') {
@@ -35,7 +36,7 @@ export const refreshAccessToken = async () => {
     throw new Error('No refresh token available');
   }
 
-  const response = await fetch('https://api.goldthorncollective.com/account/auth/refresh-token', {
+  const response = await fetch(AUTH_ENDPOINTS.refreshToken, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -66,7 +67,7 @@ export const getUserProfile = async (): Promise<UserProfile> => {
     }
 
     console.log('Fetching user settings...');
-    const settingsResponse = await fetch(`https://api.goldthorncollective.com/account/settings/${userId}`, {
+    const settingsResponse = await fetch(`${AUTH_ENDPOINTS.settings}/${userId}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',

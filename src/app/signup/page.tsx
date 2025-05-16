@@ -5,6 +5,7 @@ import GoogleLoginButton from '@/components/GoogleLoginButton';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { AUTH_ENDPOINTS } from '@/utils/apiEndpoints';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -54,7 +55,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('https://api.goldthorncollective.com/account/auth/register', {
+      const response = await fetch(AUTH_ENDPOINTS.register, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,10 +1,12 @@
 'use client';
 
+import { AUTH_ENDPOINTS } from "@/utils/apiEndpoints";
+
 export default function GoogleLoginButton() {
   const handleGoogleLogin = async () => {
     try {
       // Get the Google OAuth URL from our API
-      const response = await fetch('https://api.goldthorncollective.com/account/auth/oauth2/google');
+      const response = await fetch(AUTH_ENDPOINTS.googleAuthUrl);
       const data = await response.json();
       
       // Redirect to Google's OAuth page

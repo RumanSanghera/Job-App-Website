@@ -1,5 +1,6 @@
 'use client';
 
+import { AUTH_ENDPOINTS } from '@/utils/apiEndpoints';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -17,7 +18,7 @@ function VerifyEmailContent() {
 
   const verifyEmail = useCallback(async () => {
     try {
-      const response = await fetch(`https://api.goldthorncollective.com/account/auth/verify-email?token=${token}`, {
+      const response = await fetch(`${AUTH_ENDPOINTS.verifyEmail}?token=${token}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -58,7 +59,7 @@ function VerifyEmailContent() {
 
     setIsResending(true);
     try {
-      const response = await fetch('https://api.goldthorncollective.com/account/auth/verify-email/request', {
+      const response = await fetch(AUTH_ENDPOINTS.requestVerification, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

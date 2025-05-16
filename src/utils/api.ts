@@ -1,5 +1,6 @@
 import { userState } from './userState';
 import { setTokens } from './auth';
+import { AUTH_ENDPOINTS } from './apiEndpoints';
 
 interface CustomError extends Error {
   status?: number;
@@ -230,7 +231,7 @@ export const login = async (email: string, password: string) => {
   try {
     console.log('🔑 Attempting login for:', email);
     
-    const response = await fetch('https://api.goldthorncollective.com/account/auth/login', {
+    const response = await fetch(AUTH_ENDPOINTS.login, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
