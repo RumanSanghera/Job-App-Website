@@ -16,6 +16,6 @@ export const AUTH_ENDPOINTS = {
   user: `${API_BASE_URL}/account/user`,
 };
 
-export default {
-  AUTH_ENDPOINTS,
-}; 
+// Named export for the API endpoints object
+const apiEndpoints = { AUTH_ENDPOINTS };
+export default apiEndpoints; 
